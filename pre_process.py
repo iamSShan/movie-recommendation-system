@@ -1,10 +1,15 @@
+# This data pre process step has be referred from some open source code which was available on GitHub.
+
 import ast
 import pandas as pd
 import numpy as np
 import json
 import requests
+import requests_cache
+
 from tmdbv3api import TMDb, Movie
 
+requests_cache.install_cache('cache/2018_cache', backend='sqlite')
 
 def process_till_2016():
     print("###############################################################################")
@@ -172,13 +177,17 @@ def process_for_2017(df_2016):
     return movie_df
 
 
-def get_2018_movies(df_till_2017):
-    link = "https://en.wikipedia.org/wiki/List_of_American_films_of_2018"
-    df1 = pd.read_html(link, header=0)[2]
-    df2 = pd.read_html(link, header=0)[3]
-    df3 = pd.read_html(link, header=0)[4]
-    df4 = pd.read_html(link, header=0)[5]
-    df = df1.append(df2.append(df3.append(df4,ignore_index=True),ignore_index=True),ignore_index=True)
+def get_movies_from_wiki(link, year, wiki_table_indexes):
+    print("## Reading link: {}".format(link))
+    df1 = pd.read_html(link, header=0)[wiki_table_indexes[0]]
+    df2 = pd.read_html(link, header=0)[wiki_table_indexes[1]]
+    # Remove this condition afterwards
+    if year != 2020:
+        df3 = pd.read_html(link, header=0)[wiki_table_indexes[2]]
+        df4 = pd.read_html(link, header=0)[wiki_table_indexes[3]]
+        df = df1.append(df2.append(df3.append(df4,ignore_index=True),ignore_index=True),ignore_index=True)
+    else:
+        df = df1.append(df2, ignore_index=True)
 
     tmdb = TMDb()
     tmdb_movie = Movie()
@@ -189,19 +198,68 @@ def get_2018_movies(df_till_2017):
         movie_id = result[0].id
         response = requests.get('https://api.themoviedb.org/3/movie/{}?api_key={}'.format(movie_id,tmdb.api_key))
         resp_json = response.json()
+        # print(resp_json)
         if resp_json['genres']:
             for i in range(0, len(resp_json['genres'])):
                 genres.append(resp_json['genres'][i]['name'])
             return " ".join(genres)
         else:
             np.NaN
+
+    def get_director_wiki(x):
+        if " (director)" in x:
+            return x.split(" (director)")[0]
+        elif " (directors)" in x:
+            return x.split(" (directors)")[0]
+        else:
+            return x.split(" (director/screenplay)")[0]
+
+    def get_actor1_wiki(x):
+        return ((x.split("screenplay); ")[-1]).split(", ")[0])
+    
+    def get_actor2_wiki(x):
+        if len((x.split("screenplay); ")[-1]).split(", ")) < 2:
+            return np.NaN
+        else:
+            return ((x.split("screenplay); ")[-1]).split(", ")[1])
+
+    def get_actor3_wiki(x):
+        if len((x.split("screenplay); ")[-1]).split(", ")) < 3:
+            return np.NaN
+        else:
+            return ((x.split("screenplay); ")[-1]).split(", ")[2])
+
     print("Getting genres....")
     df["genres"] = df["Title"].map(lambda x: get_genre(str(x)))
     print(df.columns)
-    # df_2019 = df[['Title','Cast and crew','Genre']]
+    # Fetch only required columns
+    df = df[['Title','Cast and crew','genres']]
+    df['director_name'] = df['Cast and crew'].map(lambda x: get_director_wiki(str(x)))  
+    df['actor_1_name'] = df['Cast and crew'].map(lambda x: get_actor1_wiki(str(x)))
+    df['actor_2_name'] = df['Cast and crew'].map(lambda x: get_actor2_wiki(str(x)))
+    df['actor_3_name'] = df['Cast and crew'].map(lambda x: get_actor3_wiki(str(x)))
+    df = df.rename(columns={'Title':'movie_title'})
+    df = df.loc[:,['director_name','actor_1_name','actor_2_name','actor_3_name','genres','movie_title']]
+    df['actor_2_name'] = df['actor_2_name'].replace(np.nan, 'unknown')
+    df['actor_3_name'] = df['actor_3_name'].replace(np.nan, 'unknown')
+    df['movie_title'] = df['movie_title'].str.lower()
+    df['all'] = df['actor_1_name'] + ' ' + df['actor_2_name'] + ' '+ df['actor_3_name'] + ' '+ df['director_name'] +' ' + df['genres']
+    # print(df)
+    # print(df.isna().sum())
+    return df
 
 
 if __name__ == "__main__":
-    # df_till_2016 = process_till_2016()
-    # df_till_2017 = process_for_2017(df_2016)
-    get_2018_movies(df_till_2017=[])
+    df_till_2016 = process_till_2016()
+    df_till_2017 = process_for_2017(df_till_2016)
+    link_2018 = "https://en.wikipedia.org/wiki/List_of_American_films_of_2018"
+    df_2018 = get_movies_from_wiki(link_2018, 2018, wiki_table_indexes=[2, 3, 4, 5])
+    link_2019 = "https://en.wikipedia.org/wiki/List_of_American_films_of_2019"
+    df_2019 = get_movies_from_wiki(link_2019, 2019, wiki_table_indexes=[3, 4, 5, 6])
+    link_2020 = "https://en.wikipedia.org/wiki/List_of_American_films_of_2020"
+    df_2020 = get_movies_from_wiki(link_2020, 2020, wiki_table_indexes=[3, 4, 5, 6])
+    df_2020 = df_2020.dropna(how='any')
+    # print(df_2020.isna().sum())
+    final_df =  df_till_2017.append(df_2018.append(df_2019.append(df_2020,ignore_index=True),ignore_index=True),ignore_index=True)
+    print(final_df)
+    final_df.to_csv('data/processed_data.csv',index=False)
