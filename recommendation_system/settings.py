@@ -25,7 +25,7 @@ SECRET_KEY = 'q)3+!v024h&ra$&m=zy7gk+97#xy*l@r30ktl&pxc^!o+ibjp_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*'] # If Debug is False then this list cannot be empty
 
 
 # Application definition
@@ -56,7 +56,7 @@ ROOT_URLCONF = 'recommendation_system.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], # Updated this so Django can know templates directory 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -118,5 +118,13 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-
 STATIC_URL = '/static/'
+
+# Add this for making static directory available to Django
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+)
+# The absolute path to the directory where ./manage.py collectstatic will collect static files for deployment
+# STATIC_ROOT = '/home/triloq/stuff/projects/movie-recommendation-system/static/'
+
+
