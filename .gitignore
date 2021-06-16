@@ -2,3 +2,4 @@ venv36
 
 cache/*
 !cache/.gitkeep
+*.pyc
