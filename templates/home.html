@@ -8,6 +8,7 @@
     <center><h1 style=""> Movie Recommendation System</h1></center>
     <div class="form-group shadow-textarea autocomplete" id= "autocomplete" style="margin-top: 30px;text-align: center;color: white;">
         <input type="text" name="movie" class="movie form-control autocomplete-input" id="autocomplete-input" autocomplete="off" placeholder="Enter the Movie Name" style="background-color: #ffffff;border-color:#ffffff;width: 60%;color: #181818" required="required" />
+        <input type="hidden" id="movieID">
         <ul class="autocomplete-result-list"></ul>
         <!-- <br> -->
     </div>
@@ -40,9 +41,11 @@
   
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"></script>
   <script type="text/javascript">
     // Saving it to a variable so it can be used in js file
     var movie_titles = {{ movie_titles|safe }};
+    // console.log(movie_titles);
   </script>
   <script src="{% static 'js/main.js' %}"></script>   
   
