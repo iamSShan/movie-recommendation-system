@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+{% block content %}
+
+    <div class="ml-container" style="display: block;">
+        <a href="https://github.com/iamSShan/movie-recommendation-system" target="_blank" class="github-corner" title="View source on GitHub"></a>
+    <center><h1 style=""> Movie Recommendation System</h1></center>
+    <div class="form-group shadow-textarea autocomplete" id= "autocomplete" style="margin-top: 30px;text-align: center;color: white;">
+        <input type="text" name="movie" class="movie form-control autocomplete-input" id="autocomplete-input" autocomplete="off" placeholder="Enter the Movie Name" style="background-color: #ffffff;border-color:#ffffff;width: 60%;color: #181818" required="required" />
+        <ul class="autocomplete-result-list"></ul>
+        <!-- <br> -->
+    </div>
+
+    <div class="form-group" style="text-align: center;">
+      <button class="btn btn-primary btn-block movie-button" id="search_button" style="background-color: #e50914;text-align: center;border-color: #e50914;width:120px;" disabled="true" >Search</button><br><br>
+    </div>
+    </div>
+
+  <div id="loader" class="text-center">
+  </div>
+  
+  <div class="fail">
+    <center><h3>Sorry! The movie you requested is not in our database. 
+    Please check the spelling or try with other movies!</h3></center>
+  </div>
+
+    <div class="results">
+    <center>
+      <h2 id="name" class="text-uppercase"></h2>
+    </center>
+    </div>
+    
+    <div class="footer" style="">Made with<span style="font-size:150%;color:red;"> &hearts; </span>by Shantanu</div>
+    
+  <!-- The script tag is at the bottom of the body so that the page loads the actual content first, and the scripts afterwards. This will mean that content is visible to users first -->
+
+   <!-- Reference: https://tarekraafat.github.io/autoComplete.js/ -->
+    <script src="https://unpkg.com/@trevoreyre/autocomplete-js"></script>
+  
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    // Saving it to a variable so it can be used in js file
+    var movie_titles = {{ movie_titles|safe }};
+  </script>
+  <script src="{% static 'js/main.js' %}"></script>   
+  
+  
+{% endblock content %}
