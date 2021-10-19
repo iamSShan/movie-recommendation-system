@@ -4,7 +4,7 @@ $(document).ready(function(){
     // This function automatically uses the returned json from backend and shows list, but 
     // We just have to make sure whatever we are trying to return will be in `value` key
     $("#autocomplete-input").autocomplete({
-      source: "/movies/get_movies/",
+      source: "/get_movies/",
       minLength: 2,
       select: function (event, ui) {
         $("#movieID").val(ui.item.id);
@@ -55,7 +55,7 @@ $(document).ready(function(){
 
 // Get movie related info and recommended movies for given movie Id
 function get_movie_details(movie_id) {
-    const url = '/movies/recommend/?movie=' + movie_id;
+    const url = '/recommend/?movie=' + movie_id;
     $("#loading").fadeIn();
     $.ajax({
       type:'GET',

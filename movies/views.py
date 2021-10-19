@@ -18,7 +18,7 @@ def home(request):
     """
     Home page
     :param request:
-    Url: /movies/
+    Url: /
     """
     return render(request, 'home.html', context={})
 

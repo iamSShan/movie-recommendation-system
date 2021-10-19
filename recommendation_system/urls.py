@@ -17,6 +17,6 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path('movies/', include('movies.urls')),
+    path('', include('movies.urls')), # Keep it blank to make custom page as home page
     path('admin/', admin.site.urls),
 ]
