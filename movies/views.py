@@ -1,4 +1,5 @@
 import json
+import math
 import requests
 import requests_cache
 import pandas as pd
@@ -21,6 +22,19 @@ def home(request):
     Url: /
     """
     return render(request, 'home.html', context={})
+
+
+def convert_duration(minutes):
+    """
+    Convert minutes to hours and minutes
+    For eg: 139 --> 1 hour 19 minutes
+    """
+
+    # If minutes are like 60, 120, 180, etc
+    if minutes % 60 == 0:
+        return str(math.floor(minutes / 60)) + " hour(s)"
+    else:
+        return str(math.floor(minutes / 60)) + " hour(s) "+ str(minutes % 60) +" min(s)"
 
 
 def get_movies(request):
@@ -147,6 +161,9 @@ def recommend(request):
             rating = round(movies_df.loc[movies_df.movie_id == movie_id, "weighted_average"].item(), 2)
             year = int(movies_df.loc[movies_df.movie_id == movie_id, "year"].item())
             duration = movies_df.loc[movies_df.movie_id == movie_id, "duration"].item()
+            # Convert minutes to hours and minutes
+            duration = convert_duration(duration)
+
             director = movies_df.loc[movies_df.movie_id == movie_id, "director"].item()
 
             # We will only recommend those movies for which number of votes are greater than 2000 and weighted_average > 3 to improve recommendations
