@@ -41,7 +41,7 @@ $(document).ready(function(){
     var movieID = $('#movieID').val();
     console.log(movieID);
     if (movieID=="") {
-      $('.results').css('display','none');
+      $('.output').css('display','none');
       $('.wrong_movie').css('display','block');
       $('#autocomplete-input').val('');
       swal("Selected movie is not in our database", "Please select a movie from dropdown!", "warning");
@@ -63,7 +63,7 @@ function get_movie_details(movie_id) {
       dataType: 'html',
       success: function(response){
         // When results are sucessfully fetched then display it
-        $('.results').html(response);
+        $('.output').html(response);
         $('#autocomplete-input').val('');
         // Remove loader
         $("#loading").delay(500).fadeOut();
@@ -77,7 +77,7 @@ function get_movie_details(movie_id) {
         $('#autocomplete-input').val('');
         $('#movieID').val('');
         // Display alert 
-        swal("Internal Server Error!", "Cannot fetch results right now", "error");
+        swal("Internal Server Error!", "Cannot fetch recommendations right now", "error");
       },
     });
 }
