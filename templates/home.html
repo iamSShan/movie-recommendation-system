@@ -1,53 +1,42 @@
 {% extends 'base.html' %}
 {% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 {% block content %}
 
-    <div class="ml-container" style="display: block;">
-        <a href="https://github.com/iamSShan/movie-recommendation-system" target="_blank" class="github-corner" title="View source on GitHub"></a>
-    <center><h1 style=""> Movie Recommendation System</h1></center>
-    <div class="form-group shadow-textarea autocomplete" id= "autocomplete" style="margin-top: 30px;text-align: center;color: white;">
-        <input type="text" name="movie" class="movie form-control autocomplete-input" id="autocomplete-input" autocomplete="off" placeholder="Enter the Movie Name" style="background-color: #ffffff;border-color:#ffffff;width: 60%;color: #181818" required="required" />
-        <input type="hidden" id="movieID">
-        <ul class="autocomplete-result-list"></ul>
-        <!-- <br> -->
+    <div id="outer_div">
+      <center>
+        <h1> Movie Recommendation System</h1>
+      </center>
+      <div class="form-group shadow-textarea autocomplete" id="autocomplete">
+          <input type="text" name="movie" class="form-control autocomplete-input" id="autocomplete-input" autocomplete="off" placeholder="Enter the Movie Name" style="background-color: #ffffff;border-color:#ffffff;width: 60%;color: #181818" required="required" />
+          <input type="hidden" id="movieID">
+          <ul class="autocomplete-result-list"></ul>
+      </div>
+
+      <div class="form-group" style="text-align: center;">
+        <button class="btn btn-primary btn-block movie-button" id="search_button" disabled="true" >Search</button><br><br>
+      </div>
     </div>
 
-    <div class="form-group" style="text-align: center;">
-      <button class="btn btn-primary btn-block movie-button" id="search_button" style="background-color: #e50914;text-align: center;border-color: #e50914;width:120px;" disabled="true" >Search</button><br><br>
-    </div>
-    </div>
-
-  <div id="loader" class="text-center">
+  <!-- For loading loader while fetching recommendations -->
+  <div id="loading">
   </div>
-  
-  <div class="fail">
-    <center><h3>Sorry! The movie you requested is not in our database. 
-    Please check the spelling or try with other movies!</h3></center>
-  </div>
+    <!-- Results fetched from backend will be stored inside this div -->
+    <div class="output">
+    </div>
 
-    <div class="results">
-    <center>
-      <h2 id="name" class="text-uppercase"></h2>
-    </center>
+    <div id="footer">
+        <p><b>Made with <span style="color: #e25555;">&#9829;</span> by <a href="https://github.com/iamsshan" target="_blank"><i class="fa fa-github" style='font-size:30px'></i></a></b> </p>
     </div>
     
-    <div class="footer" style="">Made with<span style="font-size:150%;color:red;"> &hearts; </span>by Shantanu</div>
-    
-  <!-- The script tag is at the bottom of the body so that the page loads the actual content first, and the scripts afterwards. This will mean that content is visible to users first -->
+  <!-- The script tag is at the bottom of the body so that the page loads the actual content first, and the scripts afterwards. This means that content is visible to users first -->
 
    <!-- Reference: https://tarekraafat.github.io/autoComplete.js/ -->
-    <script src="https://unpkg.com/@trevoreyre/autocomplete-js"></script>
-  
-
+  <script src="https://unpkg.com/@trevoreyre/autocomplete-js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"></script>
-  <script type="text/javascript">
-    // Saving it to a variable so it can be used in js file
-    var movie_titles = {{ movie_titles|safe }};
-    // console.log(movie_titles);
-  </script>
-  <script src="{% static 'js/main.js' %}"></script>   
-  
-  
+  <!-- Sweetalert for beautiful alerts -->
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+
 {% endblock content %}

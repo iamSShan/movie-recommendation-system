@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div id="mycontent">
+    <div id="mcontent">
+      <div class="poster-lg">
+        <img class="poster" style="border-radius: 40px;margin-left: 90px;" height="400" width="250" src={{movie_info.poster}}>
+      </div>
+      <div class="poster-sm text-center">
+        <img class="poster" style="border-radius: 40px;margin-bottom: 5%;" height="400" width="250" src={{movie_info.poster}}>
+      </div>
+      <div id="details">
+        <br/>
+        <h6 id="title" class="movie_metadata">TITLE: &nbsp;{{movie_title}}</h6>
+        <h6 id="overview" class="movie_metadata" style="max-width: 85%">OVERVIEW: <br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{description}}</h6>
+        <h6 id="genres" class="movie_metadata">GENRE: &nbsp;{{genre}}</h6>
+        <h6 id="vote_average" class="movie_metadata">RATING: &nbsp;{{movie_info.rating}}</h6>
+        <h6 id="title" class="movie_metadata">YEAR: &nbsp;{{year}}</h6>
+        <h6 id="date" class="movie_metadata">DURATION: &nbsp;{{duration}}</h6>
+        <h6 id="status" class="movie_metadata">DIRECTED BY: &nbsp;{{director}}</h6>
+      </div>
+    </div>
+</div>
+<br/>
+
+<!-- Iterating dictionary to get cast info -->
+{% if cast_info|length > 1 %}
+  <div class="headings">
+    <center>
+    <h3><b>CAST: </b></h3>
+    
+  </center>
+  </div>
+  <div class="movie-content">
+    {% for key, value in cast_info %}
+    <div class="castCard card" style="width: 15rem;">
+        <div class="card-body">
+          
+          <div class="imageCard">
+              <img class="card-img-top castImage" height="360" width="240" alt="{{name}} - profile" src="{{value.1}}">
+          </div>
+          <div class="card-body">
+              <h5 class="card-title">{{key}}</h5>
+              <h5 class="card-title"><span style="color:#756969;font-size: 20px;">Character: {{value.0}}</span></h5>
+          </div>
+        
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<div class="movie-content">
+</div>
+
+<div class="headings">
+  <center><h3><b>RECOMMENDED MOVIES FOR YOU:</h3><h5>(Click any of the movies to get recommendation)</b></h5></center>
+</div>
+
+
+<div class="movie-content">
+  {% for movie_id, info in recommended_movies %}
+    <div class="card" style="width: 15rem;" title="{{info.0}}" id= "{{movie_id}}" onclick="recommendSelected(this)">
+      <div class="imageCard">
+        <img class="card-img-top" height="360" width="240" alt="{{info.0}} - Image" src={{info.1}}>
+        <figcaption class="fig">
+          <button class="card-btn btn btn-danger" id="recomCard"> Click for Recommendation</button>
+        </figcaption>
+       </div>
+      <div class="card-body">
+        <h5 class="card-title">{{info.0}}</h5>
+      </div>
+    </div>
+{% endfor %}
+</div>
+
+  
+  <script src="https://unpkg.com/@trevoreyre/autocomplete-js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"></script>
+  
+  <script type="text/javascript">
+    function recommendSelected(event) {
+      var movie_id = event.getAttribute('id'); 
+      console.log(movie_id);
+      get_movie_details(movie_id);
+}
+  </script>
+
+{% endblock content %}
