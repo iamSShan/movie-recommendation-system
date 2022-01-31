@@ -1,5 +1,5 @@
 venv36
-
 cache/*
 !cache/.gitkeep
 *.pyc
+pre_process/.ipynb_checkpoints/
