@@ -46,7 +46,7 @@ def get_movies(request):
         # Get entered letter from front end
         query = request.GET.get('term', '')
         # Read pandas file and search all rows with movie title similar to that searched term
-        movies_df = pd.read_csv("pre_process/preProcessedDF.csv")
+        movies_df = pd.read_csv("pre_process/output/preProcessedDF.csv")
         filtered_df = movies_df.loc[movies_df["movie_title"].str.contains(query, case=False)]
 
         results = []
@@ -152,7 +152,7 @@ def recommend(request):
 
         else:
             # Read the csv file containing list of movies
-            movies_df = pd.read_csv("pre_process/preProcessedDF.csv")
+            movies_df = pd.read_csv("pre_process/output/preProcessedDF.csv")
 
             # Get some movie info from csv file for given movie id
             movie_title = movies_df.loc[movies_df.movie_id == movie_id, "movie_title"].item()
@@ -204,7 +204,7 @@ def recommend(request):
             # Calling API
             tmdb = TMDb()
             tmdb_movie = Movie()
-            tmdb.api_key = ''
+            tmdb.api_key = '7c12036c11aea87af9d938d331e8c107'
             print("Getting response here")
             response = requests.get("https://api.themoviedb.org/3/movie/{}?api_key={}".format(movie_id,tmdb.api_key))
             # response = requests.get("https://api.themoviedb.org/3/movie/{}?api_key={}".format(movie_id,tmdb.api_key), timeout=0.5)
@@ -227,8 +227,8 @@ def recommend(request):
             print("Getting recommended movies")
             recommended_movies = get_recommended_movies(sorted_lst, tmdb)
 
-            # https://api.themoviedb.org/3/movie/tt0080684?api_key=
-            # https://api.themoviedb.org/3/movie/tt0080684/credits?api_key=
+            # https://api.themoviedb.org/3/movie/tt0080684?api_key=7c12036c11aea87af9d938d331e8c107
+            # https://api.themoviedb.org/3/movie/tt0080684/credits?api_key=7c12036c11aea87af9d938d331e8c107
 
 
             return render(request, "recom.html", {"movie_id": movie_id, "movie_info": movie_info, "movie_title": movie_title,
