@@ -1,5 +1,6 @@
 import json
 import math
+import pickle
 import requests
 import requests_cache
 import pandas as pd
@@ -173,14 +174,23 @@ def recommend(request):
 
             # CountVectorizer converts a collection of text documents to a matrix of token counts: the occurrences of tokens in each document.
             # It results in a sparse representation of the counts.
-            cv = CountVectorizer()
-            count_matrix = cv.fit_transform(movies_df['metadata'])
-            print("Created count matrix")
+
+            # This piece of code was ran only once so we can calculate vector and store:
+            # cv = CountVectorizer()
+            # count_matrix = cv.fit_transform(movies_df['metadata'])
+            # print("Created count matrix")
+            # with open("fn_vec", 'wb') as fout:
+            #     pickle.dump(count_matrix, fout)
+
+            # Now we can read the count vector file instead of calculating it
+            with open('fn_vec', 'rb') as f:
+                count_matrix = pickle.load(f)
+            print("Reading count vectorizer")
 
             # Using cosine similarity to create score matrix
             similarity = cosine_similarity(count_matrix)
             print("Calculated similarity matrix")
-            
+
             # Fetch index in the DataFrame
             idx = movies_df.loc[movies_df['movie_id'] == movie_id].index[0]
             # We will get movies which have highest similarity
