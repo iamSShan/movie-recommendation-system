@@ -120,11 +120,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATIC_URL = '/static/'
 
+# The absolute path to the directory where ./manage.py collectstatic will collect static files for deployment
+# STATIC_ROOT is only required for deployment
+# Read: https://stackoverflow.com/questions/24022558/differences-between-staticfiles-dir-static-root-and-media-root
+if not DEBUG:
+    STATIC_ROOT = "/home/shantanusharma/movie-recommendation-system/static"
+
+
 # Add this for making static directory available to Django
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
-# The absolute path to the directory where ./manage.py collectstatic will collect static files for deployment
-# STATIC_ROOT = '/home/triloq/stuff/projects/movie-recommendation-system/static/'
-
-
