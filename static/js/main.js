@@ -1,6 +1,7 @@
 // This ensures that your function is called once after all the DOM elements of the page are ready to be used.
 $(document).ready(function(){
-  
+    $('#loading').hide();
+
     // When we type in search box and autocomplete fills 10 rows
     $("#autocomplete-input").autocomplete({
       // When movie is getting searched
@@ -57,7 +58,7 @@ $(document).ready(function(){
 // Get movie related info and recommended movies for given movie Id
 function get_movie_details(movie_id) {
     const url = '/recommend/?movie=' + movie_id;
-    $("#loading").fadeIn();
+    $('#loading').show();
     $.ajax({
       type:'GET',
       url: url,
@@ -74,7 +75,7 @@ function get_movie_details(movie_id) {
       },
       error: function(){
         // Remove loader
-        $("#loading").fadeOut();
+        $('#loading').hide();
         // Make input box empty
         $('#autocomplete-input').val('');
         $('#movieID').val('');
