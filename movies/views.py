@@ -22,7 +22,18 @@ def home(request):
     :param request:
     Url: /
     """
-    return render(request, 'home.html', context={})
+    # Read movies
+    movies_df = pd.read_csv("pre_process/output/preProcessedDF.csv")
+
+    # Create list of dictionary for all movies, so that we can show them in dropdown at front end
+    movie_list = []
+    for idx, movie in movies_df.iterrows():
+        movie_dict = {}
+        movie_dict['id'] = movie["movie_id"]
+        movie_dict['value'] = movie["movie_title"]
+        movie_list.append(movie_dict)
+
+    return render(request, 'home.html', context={"movies": movie_list})
 
 
 def convert_duration(minutes):
@@ -36,39 +47,6 @@ def convert_duration(minutes):
         return str(math.floor(minutes / 60)) + " hour(s)"
     else:
         return str(math.floor(minutes / 60)) + " hour(s) "+ str(minutes % 60) +" min(s)"
-
-
-def get_movies(request):
-    """
-    When user enters in search box this function is called
-    :param request:
-    """
-    if request.is_ajax():
-        # Get entered letter from front end
-        query = request.GET.get('term', '')
-        # Read pandas file and search all rows with movie title similar to that searched term
-        movies_df = pd.read_csv("pre_process/output/preProcessedDF.csv")
-        filtered_df = movies_df.loc[movies_df["movie_title"].str.contains(query, case=False)]
-
-        results = []
-        # Count will store how many results we are going to return, right now it is 10
-        count = 0
-        for index, row in filtered_df.iterrows():
-            # To send only first 10 results
-            if count > 10:
-                break
-
-            # Dictionary to store movie id and movie title for each movie
-            rep_json = {}
-            rep_json['id'] = row["movie_id"]
-            rep_json['value'] = row["movie_title"]
-            results.append(rep_json)
-            count += 1
-
-        # Dump results to json and return it as response
-        data = json.dumps(results)
-        mimetype = 'application/json'
-        return HttpResponse(data, mimetype)
 
 
 def get_cast(movie_id, tmdb):

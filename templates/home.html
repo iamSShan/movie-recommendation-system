@@ -37,6 +37,12 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"></script>
   <!-- Sweetalert for beautiful alerts -->
   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+  <!-- Every time when page is refreshed/opened we get all movies from backend so we can create dropdown in frontend -->
+  <script type="text/javascript">
+    var movies = {{movies |safe}};
+  </script>
+
   <script src="{% static 'js/main.js' %}"></script>
 
 {% endblock content %}

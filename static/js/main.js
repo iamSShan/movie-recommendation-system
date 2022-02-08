@@ -1,17 +1,18 @@
 // This ensures that your function is called once after all the DOM elements of the page are ready to be used.
 $(document).ready(function(){
   
-    // This function automatically uses the returned json from backend and shows list, but 
-    // We just have to make sure whatever we are trying to return will be in `value` key
+    // When we type in search box and autocomplete fills 10 rows
     $("#autocomplete-input").autocomplete({
-      source: "/get_movies/",
-      minLength: 2,
+      // When movie is getting searched
+      source: function(request, response) {
+        var results = $.ui.autocomplete.filter(movies, request.term);
+        response(results.slice(0, 10));
+      },
+      // When a movie is selected from dropdown add movie id to hidden input field value
       select: function (event, ui) {
         $("#movieID").val(ui.item.id);
       }
-
     });
-
 
   // Get input field
 	const inputField = document.getElementById('autocomplete-input');  // Or we can use: document.querySelector() 
@@ -67,6 +68,7 @@ function get_movie_details(movie_id) {
         $('#autocomplete-input').val('');
         // Remove loader
         $("#loading").delay(500).fadeOut();
+        $('#movieID').val('');
         $(window).scrollTop(0);
         $('#search_button').attr('disabled', true);
       },
